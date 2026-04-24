@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ClearBook</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #1b2440;
+      --muted: #68728f;
+      --accent: #4f7cff;
+      --accent-dark: #4269da;
+      --border: #e6ebf8;
+      --card: #ffffff;
+      --success: #16a34a;
+      --danger: #be2d2d;
+      --shadow: 0 14px 34px rgba(52, 73, 131, 0.1);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    .shell {
+      width: min(1060px, 92vw);
+      margin: 0 auto;
+    }
+
+    .nav {
+      height: 72px;
+      display: flex;
+      align-items: center;
+    }
+
+    .brand {
+      font-size: 1.24rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .hero {
+      padding: 48px 0 56px;
+      text-align: left;
+    }
+
+    .hero h1 {
+      margin: 0;
+      max-width: 740px;
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+
+    .hero p {
+      margin: 18px 0 30px;
+      max-width: 620px;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 22px;
+      font-size: 0.98rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.2s ease;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: var(--accent);
+      box-shadow: 0 10px 20px rgba(79, 124, 255, 0.24);
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-dark);
+    }
+
+    .how {
+      padding: 10px 0 56px;
+    }
+
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .how-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .how-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      background: #edf2ff;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .how-title {
+      margin: 0 0 7px;
+      font-size: 1.03rem;
+    }
+
+    .how-text {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .upload-wrap {
+      padding: 8px 0 34px;
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 2px);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .dropzone {
+      border: 2px dashed #d9e2f8;
+      border-radius: 16px;
+      padding: 36px 18px;
+      text-align: center;
+      cursor: pointer;
+      background: #fafcff;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .dropzone.dragover {
+      border-color: var(--accent);
+      background: #f2f6ff;
+    }
+
+    .dropzone h3 {
+      margin: 0;
+      font-size: 1.06rem;
+    }
+
+    .dropzone p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .file-picked {
+      margin-top: 14px;
+      color: var(--accent);
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-align: left;
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .file-picked ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .file-picked li {
+      margin: 3px 0;
+    }
+
+    .actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-submit {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-submit:hover {
+      background: var(--accent-dark);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .progress {
+      margin-top: 18px;
+      display: grid;
+      gap: 9px;
+    }
+
+    .stage {
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 10px 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: #fcfdff;
+      transition: all 0.2s ease;
+    }
+
+    .stage-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #cdd4e4;
+      transition: all 0.2s ease;
+    }
+
+    .stage.active {
+      border-color: #cedafc;
+      color: #2c3a5d;
+      background: #f4f7ff;
+    }
+
+    .stage.active .stage-dot {
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(79, 124, 255, 0.18);
+    }
+
+    .status {
+      margin-top: 10px;
+      min-height: 1.4em;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .status.error {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    .result {
+      display: none;
+      text-align: center;
+      padding: 30px 8px 8px;
+    }
+
+    .result.show {
+      display: block;
+    }
+
+    .result h3 {
+      margin: 0 0 14px;
+      font-size: 1.15rem;
+    }
+
+    .btn-download {
+      display: inline-block;
+      text-decoration: none;
+      background: var(--success);
+      color: #fff;
+      padding: 15px 28px;
+      border-radius: 15px;
+      font-weight: 700;
+      font-size: 1rem;
+      box-shadow: 0 12px 24px rgba(24, 169, 87, 0.22);
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-reset {
+      background: #eef3ff;
+      color: #2c3a5d;
+      border: 1px solid #d5def5;
+      padding: 14px 20px;
+      border-radius: 15px;
+      font-weight: 600;
+    }
+
+    .footer {
+      border-top: 1px solid var(--border);
+      margin-top: 56px;
+      padding: 26px 0 40px;
+      color: var(--muted);
+      font-size: 0.89rem;
+      text-align: center;
+    }
+
+    @media (max-width: 860px) {
+      .how-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell {
+        width: min(1024px, 94vw);
+      }
+
+      .hero {
+        padding-top: 18px;
+      }
+
+      .panel {
+        padding: 16px;
+      }
+
+      .actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="nav">
+      <div class="brand">ClearBook</div>
+    </header>
+
+    <section class="hero">
+      <h1>Your messy finances, made clear.</h1>
+      <p>Upload your financial files and get one clean PDF report in seconds.</p>
+      <a class="btn btn-primary" href="#upload">Upload your file</a>
+    </section>
+
+    <section class="how" aria-label="How it works">
+      <div class="how-grid">
+        <article class="how-card">
+          <div class="how-icon" aria-hidden="true">1</div>
+          <h3 class="how-title">Upload your files</h3>
+          <p class="how-text">CSV, Excel, or PDF.</p>
+        </article>
+        <article class="how-card">
+          <div class="how-icon" aria-hidden="true">2</div>
+          <h3 class="how-title">AI reads everything</h3>
+          <p class="how-text">Your entries are understood and organized.</p>
+        </article>
+        <article class="how-card">
+          <div class="how-icon" aria-hidden="true">3</div>
+          <h3 class="how-title">Download your clean report</h3>
+          <p class="how-text">A professional PDF is generated for you.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="upload" class="upload-wrap">
+      <div class="panel">
+        <div id="uploadZone" class="dropzone" role="button" tabindex="0" aria-label="Upload your financial file">
+          <h3>Drag and drop your files here</h3>
+          <p>or click to choose CSV, XLS, XLSX, or PDF files (max 10MB each)</p>
+          <div id="filePicked" class="file-picked"></div>
+        </div>
+
+        <div id="uploadSection">
+          <div class="actions">
+            <button id="submitBtn" class="btn btn-submit" disabled>Generate my report</button>
+          </div>
+
+          <div class="progress" aria-live="polite">
+            <div id="stage1" class="stage"><span class="stage-dot"></span>Uploading</div>
+            <div id="stage2" class="stage"><span class="stage-dot"></span>Analysing with AI</div>
+            <div id="stage3" class="stage"><span class="stage-dot"></span>Generating report</div>
+          </div>
+
+          <div id="status" class="status"></div>
+        </div>
+
+        <div id="result" class="result">
+          <h3>Your report is ready.</h3>
+          <div class="result-actions">
+            <a id="downloadBtn" class="btn-download" href="#" download>Download your report</a>
+            <button id="resetBtn" class="btn btn-reset" type="button">Generate another report</button>
+          </div>
+        </div>
+
+        <input id="fileInput" type="file" accept=".csv,.xls,.xlsx,.pdf" multiple hidden>
+      </div>
+    </section>
+
+    <footer class="footer">
+      Your files are never stored permanently. © 2026 ClearBook
+    </footer>
+  </div>
+
+  <script>
+    const API_URL = "/upload";
+    const MAX_SIZE = 10 * 1024 * 1024;
+    const ALLOWED = [".csv", ".xls", ".xlsx", ".pdf"];
+
+    const uploadZone = document.getElementById("uploadZone");
+    const fileInput = document.getElementById("fileInput");
+    const filePicked = document.getElementById("filePicked");
+    const submitBtn = document.getElementById("submitBtn");
+    const status = document.getElementById("status");
+    const result = document.getElementById("result");
+    const uploadSection = document.getElementById("uploadSection");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const stage1 = document.getElementById("stage1");
+    const stage2 = document.getElementById("stage2");
+    const stage3 = document.getElementById("stage3");
+
+    let selectedFiles = [];
+    let reportBlobUrl = "";
+
+    function setStatus(message, isError) {
+      status.textContent = message;
+      status.classList.toggle("error", Boolean(isError));
+    }
+
+    function resetStages() {
+      stage1.classList.remove("active");
+      stage2.classList.remove("active");
+      stage3.classList.remove("active");
+    }
+
+    function setStage(index) {
+      resetStages();
+      if (index >= 1) {
+        stage1.classList.add("active");
+      }
+      if (index >= 2) {
+        stage2.classList.add("active");
+      }
+      if (index >= 3) {
+        stage3.classList.add("active");
+      }
+    }
+
+    function clearDownloadUrl() {
+      if (reportBlobUrl) {
+        URL.revokeObjectURL(reportBlobUrl);
+        reportBlobUrl = "";
+      }
+    }
+
+    function renderPickedFiles(files) {
+      if (!files.length) {
+        filePicked.innerHTML = "";
+        return;
+      }
+
+      const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+      const totalSizeMb = (totalSize / (1024 * 1024)).toFixed(2);
+
+      const items = files
+        .map((file) => "<li>" + file.name + " (" + (file.size / 1024).toFixed(1) + " KB)</li>")
+        .join("");
+      filePicked.innerHTML =
+        "<div>" +
+        files.length +
+        " file(s) selected - " +
+        totalSizeMb +
+        " MB total</div><ul>" +
+        items +
+        "</ul>";
+    }
+
+    function resetUploader() {
+      selectedFiles = [];
+      fileInput.value = "";
+      submitBtn.disabled = true;
+      clearDownloadUrl();
+      result.classList.remove("show");
+      uploadSection.style.display = "block";
+      renderPickedFiles(selectedFiles);
+      resetStages();
+      setStatus("Select at least one file.", false);
+    }
+
+    function pickFiles(fileList) {
+      clearDownloadUrl();
+      result.classList.remove("show");
+      uploadSection.style.display = "block";
+
+      const candidateFiles = Array.from(fileList);
+      if (!candidateFiles.length) {
+        selectedFiles = [];
+        submitBtn.disabled = true;
+        renderPickedFiles(selectedFiles);
+        setStatus("Select at least one file.", true);
+        resetStages();
+        return;
+      }
+
+      for (const file of candidateFiles) {
+        const dot = file.name.lastIndexOf(".");
+        const ext = dot >= 0 ? file.name.slice(dot).toLowerCase() : "";
+
+        if (!ALLOWED.includes(ext)) {
+          selectedFiles = [];
+          submitBtn.disabled = true;
+          renderPickedFiles(selectedFiles);
+          setStatus("We only support CSV, Excel and PDF files", true);
+          resetStages();
+          return;
+        }
+
+        if (file.size > MAX_SIZE) {
+          selectedFiles = [];
+          submitBtn.disabled = true;
+          renderPickedFiles(selectedFiles);
+          setStatus("This file is too large, max size is 10MB", true);
+          resetStages();
+          return;
+        }
+      }
+
+      selectedFiles = candidateFiles;
+      submitBtn.disabled = false;
+      renderPickedFiles(selectedFiles);
+      setStatus("Ready when you are.", false);
+      resetStages();
+    }
+
+    uploadZone.addEventListener("click", () => fileInput.click());
+    uploadZone.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        fileInput.click();
+      }
+    });
+
+    uploadZone.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      uploadZone.classList.add("dragover");
+    });
+
+    uploadZone.addEventListener("dragleave", () => {
+      uploadZone.classList.remove("dragover");
+    });
+
+    uploadZone.addEventListener("drop", (event) => {
+      event.preventDefault();
+      uploadZone.classList.remove("dragover");
+      if (event.dataTransfer.files.length > 0) {
+        pickFiles(event.dataTransfer.files);
+      }
+    });
+
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files.length > 0) {
+        pickFiles(fileInput.files);
+      }
+    });
+
+    submitBtn.addEventListener("click", async () => {
+      if (!selectedFiles.length) {
+        setStatus("Select at least one file first.", true);
+        return;
+      }
+
+      submitBtn.disabled = true;
+      setStage(1);
+      setStatus("Uploading...", false);
+
+      try {
+        const data = new FormData();
+        selectedFiles.forEach((file) => data.append("files", file));
+
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        setStage(2);
+        setStatus("Analysing with AI...", false);
+
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        setStage(3);
+        setStatus("Generating report...", false);
+
+        const response = await fetch(API_URL, {
+          method: "POST",
+          body: data,
+        });
+
+        if (!response.ok) {
+          throw new Error("Something went wrong - please check your file and try again");
+        }
+
+        const type = response.headers.get("content-type") || "";
+        if (!type.includes("application/pdf")) {
+          throw new Error("Something went wrong - please check your file and try again");
+        }
+
+        const blob = await response.blob();
+        reportBlobUrl = URL.createObjectURL(blob);
+        downloadBtn.href = reportBlobUrl;
+        downloadBtn.download = "clearbook-report.pdf";
+
+        uploadSection.style.display = "none";
+        result.classList.add("show");
+        setStatus("", false);
+      } catch (error) {
+        resetStages();
+        setStatus("Something went wrong - please check your file and try again", true);
+        submitBtn.disabled = false;
+      }
+    });
+
+    resetBtn.addEventListener("click", () => {
+      resetUploader();
+    });
+
+    window.addEventListener("beforeunload", () => {
+      clearDownloadUrl();
+    });
+  </script>
+</body>
+</html>
